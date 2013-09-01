@@ -6,7 +6,7 @@
 #include "sdk/amx/amx.h"
 #include "sdk/plugincommon.h"
 
-#if _MSC_VER < 1700
+#if defined _MSC_VER && _MSC_VER < 1700
   #define vsnprintf vsprintf_s
 #endif
 
