@@ -5,7 +5,11 @@ set(SUBHOOK_STATIC TRUE)
 add_subdirectory(subhook)
 
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-include_directories(subhook)
+include_directories(sdk/amx subhook)
+
+if(UNIX)
+  add_definitions(-DLINUX)
+endif()
 
 add_library(sdk STATIC
   sdk/amx/amx.h
