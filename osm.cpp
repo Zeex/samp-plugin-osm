@@ -30,10 +30,6 @@
 #include "sdk/amx/amx.h"
 #include "sdk/plugincommon.h"
 
-#if defined _MSC_VER && _MSC_VER < 1700
-  #define vsnprintf vsprintf_s
-#endif
-
 typedef void (*logprintf_t)(const char *format, ...);
 
 static const std::size_t LogprintfBufferSize = 1024;
@@ -58,9 +54,14 @@ static void do_logprintf(const char *format, ...) {
   SubHook::ScopedRemove remove(&logprintf_hook);
 
   char buffer[LogprintfBufferSize];
-  std::va_list args;
+  va_list args;
   va_start(args, format);
-  vsnprintf(buffer, sizeof(buffer), format, args);
+  #ifdef _MSC_VER
+    vsprintf_s(buffer, sizeof(buffer), format, args);
+    buffer[LogprintfBufferSize - 1] = '\0';
+  #else
+    vsnprintf(buffer, sizeof(buffer), format, args);
+  #endif
   va_end(args);
 
   for (std::vector<AMX*>::const_iterator it = scripts.begin();
